@@ -65,6 +65,7 @@
 <footer>Cinematic Module — Particle Explosion Button</footer>
 <script>
 (function(){
+  var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll('.explode-btn').forEach(function(btn){
     btn.addEventListener('click',function(e){
       var rect=btn.getBoundingClientRect();
@@ -72,57 +73,73 @@
       var cy=rect.top+rect.height/2;
       var type=btn.dataset.type;
       var color=btn.dataset.color;
+      btn.animate([{transform:'scale(1)'},{transform:'scale(.9)',offset:.35},{transform:'scale(1)'}],{duration:340,easing:'cubic-bezier(.16,1,.3,1)'});
+      if(reduced)return;
       if(type==='particles')spawnParticles(cx,cy,color);
       else if(type==='confetti')spawnConfetti(cx,cy);
       else if(type==='ring')spawnRing(cx,cy,color);
     });
   });
   function spawnParticles(cx,cy,color){
-    for(var i=0;i<20;i++){
+    for(var i=0;i<28;i++){
       var p=document.createElement('div');p.className='particle';
-      p.style.background=color;p.style.left=cx+'px';p.style.top=cy+'px';
+      var size=5+Math.random()*7;
+      p.style.width=size+'px';p.style.height=size+'px';
+      p.style.background=color;
+      p.style.boxShadow='0 0 '+Math.round(size*1.6)+'px '+color;
+      p.style.left=(cx-size/2)+'px';p.style.top=(cy-size/2)+'px';
       document.body.appendChild(p);
       var angle=Math.random()*Math.PI*2;
-      var dist=40+Math.random()*80;
+      var dist=70+Math.random()*110;
       var dx=Math.cos(angle)*dist;
-      var dy=Math.sin(angle)*dist-40;
-      p.style.transition='all .6s cubic-bezier(.16,1,.3,1)';
-      p.offsetHeight;
-      p.style.transform='translate('+dx+'px,'+dy+'px) scale(0)';
-      p.style.opacity='0';
-      setTimeout(function(el){el.remove()},700,p);
+      var dy=Math.sin(angle)*dist-50;
+      var dur=900+Math.random()*500;
+      p.animate([
+        {transform:'translate(0,0) scale(1)',opacity:1},
+        {transform:'translate('+(dx*.7)+'px,'+(dy*.7)+'px) scale(.9)',opacity:1,offset:.55},
+        {transform:'translate('+dx+'px,'+(dy+50)+'px) scale(.2)',opacity:0}
+      ],{duration:dur,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'});
+      setTimeout(function(el){el.remove()},dur+80,p);
     }
   }
   function spawnConfetti(cx,cy){
     var colors=['#e85d3a','#ff8866','#ffd700','#ff69b4','#00f0ff','#4f46e5'];
-    for(var i=0;i<30;i++){
+    for(var i=0;i<42;i++){
       var c=document.createElement('div');c.className='confetti';
       c.style.background=colors[Math.floor(Math.random()*colors.length)];
-      c.style.left=cx+'px';c.style.top=cy+'px';
+      c.style.left=(cx-3)+'px';c.style.top=(cy-6)+'px';
       document.body.appendChild(c);
-      var dx=(Math.random()-.5)*200;
-      var dy=-60-Math.random()*120;
-      var rot=Math.random()*720;
-      c.style.transition='all .8s cubic-bezier(.16,1,.3,1)';
-      c.offsetHeight;
-      c.style.transform='translate('+dx+'px,'+dy+'px) rotate('+rot+'deg) scale(0)';
-      c.style.opacity='0';
-      setTimeout(function(el){el.remove()},900,c);
+      var dx=(Math.random()-.5)*260;
+      var peak=-(70+Math.random()*130);
+      var fall=170+Math.random()*160;
+      var rot=(Math.random()<.5?-1:1)*(360+Math.random()*540);
+      var dur=1400+Math.random()*600;
+      c.animate([
+        {transform:'translate(0,0) rotate(0deg)',opacity:1},
+        {transform:'translate('+(dx*.6)+'px,'+peak+'px) rotate('+(rot*.5)+'deg)',opacity:1,offset:.38},
+        {transform:'translate('+(dx*.85)+'px,'+(fall*.6)+'px) rotate('+(rot*.8)+'deg)',opacity:.9,offset:.75},
+        {transform:'translate('+dx+'px,'+fall+'px) rotate('+rot+'deg)',opacity:0}
+      ],{duration:dur,easing:'cubic-bezier(.25,.6,.35,1)',fill:'forwards'});
+      setTimeout(function(el){el.remove()},dur+80,c);
     }
   }
   function spawnRing(cx,cy,color){
+    makeRing(cx,cy,color,0,2.5);
+    makeRing(cx,cy,color,120,1.5);
+  }
+  function makeRing(cx,cy,color,delay,lw){
     var r=document.createElement('div');r.className='ring';
     r.style.borderColor=color;r.style.left=cx+'px';r.style.top=cy+'px';
-    r.style.width='10px';r.style.height='10px';
-    r.style.marginLeft='-5px';r.style.marginTop='-5px';
+    r.style.width='140px';r.style.height='140px';
+    r.style.marginLeft='-70px';r.style.marginTop='-70px';
+    r.style.borderWidth=lw+'px';
     document.body.appendChild(r);
-    r.style.transition='all .5s cubic-bezier(.16,1,.3,1)';
-    r.offsetHeight;
-    r.style.width='120px';r.style.height='120px';
-    r.style.marginLeft='-60px';r.style.marginTop='-60px';
-    r.style.opacity='1';
-    setTimeout(function(){r.style.opacity='0'},200);
-    setTimeout(function(){r.remove()},600);
+    r.animate([
+      {transform:'scale(.08)',opacity:0},
+      {transform:'scale(.25)',opacity:1,offset:.18},
+      {transform:'scale(1)',opacity:0}
+    ],{duration:780,easing:'cubic-bezier(.16,1,.3,1)',delay:delay,fill:'forwards'});
+    setTimeout(function(el){el.remove()},900+delay+80,r);
   }
 })();
 </script>
