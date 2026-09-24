@@ -103,10 +103,15 @@
       var dy=Math.sin(angle)*dist-50;
       var dur=900+Math.random()*500;
       p.animate([
-        {transform:'translate(0,0) scale(1)',opacity:1},
-        {transform:'translate('+(dx*.7)+'px,'+(dy*.7)+'px) scale(.9)',opacity:1,offset:.55},
-        {transform:'translate('+dx+'px,'+(dy+50)+'px) scale(.2)',opacity:0}
+        {transform:'translate(0,0) scale(1)'},
+        {transform:'translate('+(dx*.7)+'px,'+(dy*.7)+'px) scale(.9)',offset:.55},
+        {transform:'translate('+dx+'px,'+(dy+50)+'px) scale(.2)'}
       ],{duration:dur,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'});
+      p.animate([
+        {opacity:1},
+        {opacity:1,offset:.6},
+        {opacity:0}
+      ],{duration:dur,easing:'linear',fill:'forwards'});
       setTimeout(function(el){el.remove()},dur+80,p);
     }
   }
@@ -124,11 +129,16 @@
       var rot=(Math.random()<.5?-1:1)*(360+Math.random()*540);
       var dur=1400+Math.random()*600;
       c.animate([
-        {transform:'translate(0,0) rotate(0deg)',opacity:1},
-        {transform:'translate('+(dx*.6)+'px,'+peak+'px) rotate('+(rot*.5)+'deg)',opacity:1,offset:.38},
-        {transform:'translate('+(dx*.85)+'px,'+(fall*.6)+'px) rotate('+(rot*.8)+'deg)',opacity:.9,offset:.75},
-        {transform:'translate('+dx+'px,'+fall+'px) rotate('+rot+'deg)',opacity:0}
+        {transform:'translate(0,0) rotate(0deg)'},
+        {transform:'translate('+(dx*.6)+'px,'+peak+'px) rotate('+(rot*.5)+'deg)',offset:.38},
+        {transform:'translate('+(dx*.85)+'px,'+(fall*.6)+'px) rotate('+(rot*.8)+'deg)',offset:.75},
+        {transform:'translate('+dx+'px,'+fall+'px) rotate('+rot+'deg)'}
       ],{duration:dur,easing:'cubic-bezier(.25,.6,.35,1)',fill:'forwards'});
+      c.animate([
+        {opacity:1},
+        {opacity:1,offset:.7},
+        {opacity:0}
+      ],{duration:dur,easing:'linear',fill:'forwards'});
       setTimeout(function(el){el.remove()},dur+80,c);
     }
   }
@@ -144,10 +154,15 @@
     r.style.borderWidth=lw+'px';
     document.body.appendChild(r);
     r.animate([
-      {transform:'scale(.08)',opacity:0},
-      {transform:'scale(.25)',opacity:1,offset:.18},
-      {transform:'scale(1)',opacity:0}
+      {transform:'scale(.08)'},
+      {transform:'scale(1)'}
     ],{duration:780,easing:'cubic-bezier(.16,1,.3,1)',delay:delay,fill:'forwards'});
+    r.animate([
+      {opacity:0},
+      {opacity:1,offset:.15},
+      {opacity:1,offset:.5},
+      {opacity:0}
+    ],{duration:780,easing:'linear',delay:delay,fill:'forwards'});
     setTimeout(function(el){el.remove()},900+delay+80,r);
   }
 })();
