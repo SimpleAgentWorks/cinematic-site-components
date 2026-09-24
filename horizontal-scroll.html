@@ -10,7 +10,7 @@
 <style>
   :root { --bg: #08080a; --surface: #111114; --text: #eae7e2; --muted: #5a5a5e; --accent: #5eadb5; --border: #1e1e22; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip; }
 
   .hero {
     min-height: 100dvh; display: flex; flex-direction: column;
@@ -174,12 +174,17 @@
 
   // Calculate how far to scroll horizontally
   function getScrollDistance() {
-    return track.scrollWidth - window.innerWidth;
+    return Math.max(track.scrollWidth - window.innerWidth, 0);
   }
 
-  // Set section height to accommodate horizontal scroll
+  // Set section height from the pan distance so the scroll-to-pan ratio
+  // feels the same on any screen size (wide desktops included)
+  function setSectionHeight() {
+    section.style.height = (window.innerHeight + getScrollDistance() * 2.5) + 'px';
+  }
   var totalCards = cards.length;
-  section.style.height = (totalCards * 100) + 'vh';
+  setSectionHeight();
+  ScrollTrigger.addEventListener('refreshInit', setSectionHeight);
 
   gsap.to(track, {
     x: function() { return -getScrollDistance(); },
